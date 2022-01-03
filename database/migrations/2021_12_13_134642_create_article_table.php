@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 use app\Models\Lang;
 use app\Models\Types;
 
@@ -20,7 +21,7 @@ class CreateArticleTable extends Migration
             $table->string('name');
             $table->string('desc');
             $table->string('path')->nullable(true);
-            $table->longText('ttext')->nullable(true);
+            $table->string('ttext')->nullable(true);
             $table->unsignedBigInteger('lang_id')->nullable(true);
             $table->foreign('lang_id')->references('id')->on('lang');
             $table->unsignedBigInteger('type_id')->nullable(true);

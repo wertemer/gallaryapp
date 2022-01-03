@@ -81,8 +81,8 @@
         <div class="row" id="text">
             <div class="col-md-12">
                 <fieldset>
-                    <legend>Текст:</legend>
-                    <textarea name="text" id="text" row="100" col="1000" class="form-control"></textarea>
+                    <legend>Путь к рассказу:</legend>
+                    <input id="text" name="text" type="file" value="Загрузить" class="form-control-file">
                 </fieldset>
             </div>
         </div>

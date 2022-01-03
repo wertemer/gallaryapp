@@ -29,6 +29,19 @@
                                 @endforeach
                             </div>
                         </div>
+                        @if(Session::has('login'))
+                        &nbsp;
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="d-inline">
+                                    <a href="/admin-panel/changegallary/{{ $content->id }}" class="btn btn-primary btn-sm">Изменить</a>
+                                </div>
+                                <div class="d-inline">
+                                    <a href="/admin-panel/delgallary/{{ $content->id }}" class="btn btn-primary btn-sm">Удалить</a>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
                     </div>
             <?php
                 $i=$i+1;
@@ -49,6 +62,19 @@
                                 @endforeach
                             </div>
                         </div>
+                        @if(Session::has('login'))
+                        &nbsp;
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="d-inline">
+                                    <a href="/admin-panel/changegallary/{{ $content->id }}" class="btn btn-primary btn-sm">Изменить</a>
+                                </div>
+                                <div class="d-inline">
+                                    <a href="/admin-panel/delgallary/{{ $content->id }}" class="btn btn-primary btn-sm">Удалить</a>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
                     </div>
             <?php
                 $i=$i+1;
@@ -69,6 +95,19 @@
                                 @endforeach
                             </div>
                         </div>
+                        @if(Session::has('login'))
+                        &nbsp;
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="d-inline">
+                                    <a href="/admin-panel/changegallary/{{ $content->id }}" class="btn btn-primary btn-sm">Изменить</a>
+                                </div>
+                                <div class="d-inline">
+                                    <a href="/admin-panel/delgallary/{{ $content->id }}" class="btn btn-primary btn-sm">Удалить</a>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
                     </div>
                 </div>
             <?php

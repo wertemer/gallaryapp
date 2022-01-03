@@ -10,25 +10,31 @@
         </div>
         <div class="col-md-9">
             @foreach($data['article-show'] as $content)
-                <h4>{{ $content->name }}</h4>
-                @foreach($data['tags'] as $tag)
-                    @if(session()->has('login'))                
-                    <div class="d-inline">
-                        <a href="/admin-panel/gallary-list/{{ $content->type_id }}/{{ $content->lang_id }}/{{ $tag->genre_id }}" class="btn btn-secondary">
-                            {{ $tag->name }}
-                        </a>
-                    </div>
-                    @else
-                    <div class="d-inline">
-                        <a href="/site-panel/gallary-list/{{ $content->type_id }}/{{ $content->lang_id }}/{{ $tag->genre_id }}" class="btn btn-secondary">
-                            {{ $tag->name }}
-                        </a>
+                <div class='row'>
+                    <div class="col-md-12">
+                        <h4>{{ $content->name }}</h4>
+                        @foreach($data['tags'] as $tag)
+                            @if(session()->has('login'))                
+                            <div class="d-inline">
+                                <a href="/admin-panel/gallary-list/{{ $content->type_id }}/{{ $content->lang_id }}/{{ $tag->genre_id }}" class="btn btn-secondary">
+                                    {{ $tag->name }}
+                                </a>
+                            </div>
+                            @else
+                            <div class="d-inline">
+                                <a href="/site-panel/gallary-list/{{ $content->type_id }}/{{ $content->lang_id }}/{{ $tag->genre_id }}" class="btn btn-secondary">
+                                    {{ $tag->name }}
+                                </a>
+                            </div>                
+                            @endif
+                        @endforeach
                     </div>                
-                    @endif
-                @endforeach
-                <div>
-                    {{ $content->ttext }}
                 </div>
+                <div class='row'>
+                    <div class='col-md-12'>
+                        {{ $data['text'] }}
+                    </div>
+                </div>                
             @endforeach
         </div>
     </div>

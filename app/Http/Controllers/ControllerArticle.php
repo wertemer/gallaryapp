@@ -29,7 +29,7 @@ class ControllerArticle extends Controller {
                                 'article.id as id',
                                 'article.name as name',
                                 'article.desc as desc',
-                                'article.ttext as text',
+                                'article.path as text',
                                 'types.name as type_name',
                                 'article.updated_at as updated',
                                 'article.type_id as type_id',
@@ -56,7 +56,7 @@ class ControllerArticle extends Controller {
                                 'article.id as id',
                                 'article.name as name',
                                 'article.desc as desc',
-                                'article.ttext as text',
+                                'article.path as text',
                                 'types.name as type_name',
                                 'article.updated_at as updated',
                                 'article.type_id as type_id',
@@ -117,7 +117,7 @@ class ControllerArticle extends Controller {
                     'article.id as id',
                     'article.name as name',
                     'article.desc as desc',
-                    'article.ttext as text',
+                    'article.path as text',
                     'types.name as type_name',
                     'article.updated_at as updated',
                     'article.type_id as type_id',
@@ -144,7 +144,7 @@ class ControllerArticle extends Controller {
                     'article.id as id',
                     'article.name as name',
                     'article.desc as desc',
-                    'article.ttext as text',
+                    'article.path as text',
                     'types.name as type_name',
                     'article.updated_at as updated',
                     'article.type_id as type_id',
@@ -210,17 +210,19 @@ class ControllerArticle extends Controller {
                     }
                 }
             } else {
-                $path = $request->name;
+                $path = $request->text;
+                Storage::makeDirectory(config('constants.Path_Article_RU'));
+                Storage::putFileAs(config('constants.Path_Article_RU').'', $path, $path->getClientOriginalName());
             }
             $id = DB::table('article')->insertgetid([
                 'name' => $request->name,
                 'desc' => $request->desc,
                 'path' => $path,
-                'ttext' => $request->text,
                 'lang_id' => $request->lang,
                 'type_id' => $request->gallary,
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'ttext'=>$path->getClientOriginalName()
             ]);
             if (isset($id)) {
                 DB::table('articlegenre')->where('article_id', $id)->delete();
@@ -231,7 +233,7 @@ class ControllerArticle extends Controller {
                     ]);
                 }
             }
-            return view('admin')->with('data', []);
+            return redirect('/');
         }
         return view('authorization');
     }
@@ -246,7 +248,7 @@ class ControllerArticle extends Controller {
             ->leftJoin('genre','genre.id','=','articlegenre.genre_id')
             ->where('article_id',$id)
             ->get();
-        if ($type == config('constants.Gallary')) {            
+        if($type == config('constants.Gallary')) {            
             foreach ($gallary as $gal) {
                 $files[] = str_replace('public/', './', Storage::files(config('constants.Path_Gallary') . '' . $gal->name . ''));
             }
@@ -298,13 +300,17 @@ class ControllerArticle extends Controller {
         }
         if($type==config('constants.Stories')&& $lang==config('constants.Russian')){
             $tg = DB::table('genre')->get();
+            foreach($gallary as $file){
+                $text=Storage::get(config('constants.Path_Article_RU').$file->ttext);//File::get();
+            }           
+            Log::info($text);
             if ($request->session()->has('login')) {
                 return view('admin')->with('data', [
                             'article-show' => $gallary,
                             'type_id' => $type,
                             'lang_id' => $lang,
                             'tag_list' => $tg,
-                            'files' => $files,
+                            'text' => $text,
                             'tags'=>$tags
                 ]);
             }else{
@@ -313,6 +319,7 @@ class ControllerArticle extends Controller {
                             'type_id' => $type,
                             'lang_id' => $lang,
                             'tag_list' => $tg,
+                            'text' => $text,
                             'tags'=>$tags
                 ]);
             }
@@ -322,6 +329,7 @@ class ControllerArticle extends Controller {
 
     public function Main(Request $request){
         $tags=DB::table('genre')->get();
+        $files=Array();
         $articles=DB::table('article')
             ->where('type_id',config('constants.Stories'))
             ->orderby('updated_at','desc')
@@ -365,5 +373,81 @@ class ControllerArticle extends Controller {
                 'files'=>$files
             ]);
         }
+    }
+
+    public function Delete(Request $request){
+        if($request->session()->has('login')){
+            $id=$request->id;
+            $article=DB::table('article')->where('id',$id)->get();
+            foreach($article as $content){                
+                if($content->type_id==config('constants.Stories')){
+                    DB::table('articlegenre')->where('article_id', $id)->delete();
+                    DB::table('article')->where('id',$id)->delete();
+                }
+                if($content->type_id==config('constants.Gallary')){
+                    Storage::deleteDirectory(config('constants.Path_Gallary').''.$content->name);
+                    DB::table('articlegenre')->where('article_id', $id)->delete();
+                    DB::table('article')->where('id',$id)->delete();
+                }
+                if($content->type_id==config('constants.Comix')){
+                    if($content->lang_id==config('constants.Russian')){
+                        Storage::deleteDirectory(config('constants.Path_Gallary_RU').''.$content->name);
+                        DB::table('articlegenre')->where('article_id', $id)->delete();
+                        DB::table('article')->where('id',$id)->delete();
+                    }
+                }
+            }
+            return redirect('/');
+        }else{
+            return view('authorization');
+        }  
+    }
+    
+    public function ToChangeArticle(Request $request){
+        $id=$request->id;
+        $mas=Array();
+        if(session()->has('login')){
+            $article=DB::table('article')->where('id',$id)->get();
+            $tags=DB::table('articlegenre')
+                ->leftJoin('genre','genre.id','=','articlegenre.genre_id')
+                ->where('article_id',$id)
+                ->get();
+            foreach($tags as $tag){
+                $mas[]=$tag->id;
+            }
+            $tg = DB::table('genre')->get();
+            $lg=DB::table('lang')->get();
+            return view('admin')->with('data', [
+                        'article-edit' => $article,
+                        'tags' => $mas,
+                        'tag_list' => $tg,
+                        'lang_list'=>$lg,
+                        'isnew'=>false
+            ]);
+        }else{
+            return view('authorization');
+        }        
+    }
+    
+    public function ChangeArticle(Request $request){
+        if(session()->has('login')){
+            $id=$request->id;
+            DB::table('article')->where('id',$id)
+                ->update([
+                    'name'=>$request->name,
+                    'desc'=>$request->desc,
+                    'lang_id'=>$request->lang,
+                    'ttext'=>$request->text
+                ]);
+            DB::table('articlegenre')->where('article_id',$id)->delete();
+            foreach($request->tag as $tag){
+                DB::table('articlegenre')->insert([
+                    'article_id'=>$id,
+                    'genre_id'=>$tag
+                ]);
+            }
+            return redirect('/gallary/'.config('constants.Stories').'/'.$request->lang.'/'.$id);
+        }
+        return redirect('/');
     }
 }

@@ -57,6 +57,8 @@
                 @include('comix-show',['data'=>$data])
             @elseif(array_key_exists('article-show',$data))
                 @include('article-show',['data'=>$data])
+            @elseif(array_key_exists('article-edit',$data))
+                @include('edit-article',['data'=>$data])
             @else
                 @include('last-contents',['data'=>$data])
             @endif

@@ -10,7 +10,7 @@ class ControllerTypes extends Controller
     //
     public function TypesList(Request $request){
         if($request->session()->has('login')){
-            $types=DB::table('types')->get();
+            $types=DB::table('types')->paginate(15);//->get();
             return view('admin')->with('data',['types'=>$types]);
         }
         return view('authorization');

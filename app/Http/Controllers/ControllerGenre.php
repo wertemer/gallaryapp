@@ -10,7 +10,7 @@ class ControllerGenre extends Controller
     //
     public function List(Request $request){
         if($request->session()->has('login')){
-            $genre=DB::table('genre')->get();
+            $genre=DB::table('genre')->orderBy('name','asc')->paginate(15);//->get();
             return view('admin')->with('data',['genre'=>$genre]);
         }
         return view('authorization');

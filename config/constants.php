@@ -19,6 +19,7 @@ return [
     'Russian'=>1,
     'Группа'=>1,
     'Path_Gallary'=>'/public/gallary/',
-    'Path_Gallary_RU'=>'/public/comix/ru/'
+    'Path_Gallary_RU'=>'/public/comix/ru/',
+    'Path_Article_RU'=>'/public/article/ru/'
 ];
 

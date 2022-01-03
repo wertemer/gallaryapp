@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\DB;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -118,3 +117,6 @@ Route::get('/admin-panel/content-create',function(){
     }
 });
 Route::post('/createcontent','App\Http\Controllers\ControllerArticle@Add');
+Route::get('/admin-panel/delgallary/{id}','App\Http\Controllers\ControllerArticle@Delete');
+Route::get('/admin-panel/tochangearticle/{id}','App\Http\Controllers\ControllerArticle@ToChangeArticle');
+Route::post('/changearticle','App\Http\Controllers\ControllerArticle@ChangeArticle');

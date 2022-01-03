@@ -56,6 +56,19 @@
                     @endforeach
                 </div>
             </div>
+            @if(Session::has('login'))
+            &nbsp;
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="d-inline">
+                        <a href="/admin-panel/tochangearticle/{{ $content->id }}" class="btn btn-primary">Изменить</a>
+                    </div>
+                    <div class="d-inline">
+                        <a href="/admin-panel/delgallary/{{ $content->id }}" class="btn btn-primary">Удалить</a>
+                    </div>
+                </div>
+            </div>
+            @endif
         </div>
     </div>
     @endforeach
